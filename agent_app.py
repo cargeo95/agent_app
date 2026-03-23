@@ -1,5 +1,14 @@
-import datetime
+import sys
 import os
+
+# Forzar UTF-8 en Windows para soportar emojis y caracteres especiales
+os.environ["PYTHONIOENCODING"] = "utf-8"
+if sys.stdout.encoding != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
+if sys.stderr.encoding != "utf-8":
+    sys.stderr.reconfigure(encoding="utf-8")
+
+import datetime
 
 import pytz
 import yaml
@@ -8,11 +17,11 @@ from smolagents import (
     CodeAgent,
     DuckDuckGoSearchTool,
     FinalAnswerTool,
-    InferenceClientModel,
+    HfApiModel,
     load_tool,
     tool,
 )
-from smolagents.ui import GradioUI
+from Gradio_UI import GradioUI
 
 # =====================================================
 # 1️⃣ Cargar variables de entorno (.env)
@@ -66,7 +75,7 @@ image_generation_tool = load_tool("agents-course/text-to-image", trust_remote_co
 # =====================================================
 
 
-model = InferenceClientModel(
+model = HfApiModel(
     model_id="Qwen/Qwen2.5-Coder-32B-Instruct",
     token=HF_TOKEN,
     max_tokens=2092,
@@ -77,7 +86,7 @@ model = InferenceClientModel(
 # =====================================================
 # 5️⃣ Cargar System Prompt
 # =====================================================
-with open("prompts.yaml", "r") as stream:
+with open("prompts.yaml", "r", encoding="utf-8") as stream:
     prompt_templates = yaml.safe_load(stream)
 
 
